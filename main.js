@@ -119,6 +119,20 @@ function addResponseHeaders(response, headers) {
   });
 }
 
+
+function updateRequestHostname(request, hostname) {
+  const urlObject = new URL(request.url);
+  const url = request.url.replace(`/${urlObject.hostname}/`, `/${hostname}/`);
+  request = new Request(url, {
+    method: request.method,
+    headers: request.headers,
+    body: request.body,
+    redirect: request.redirect,
+    referrer: request.referrer
+  });
+  return request;
+}
+
 function shouldTerminateTls() {
   return false;
 }
@@ -136,7 +150,7 @@ async function handleOpenCollective(request) {
     headers['OC-Environment'] = environment;
   }
   if (domains[environment] && domains[environment][backend]) {
-    request.hostname = domains[environment][backend];
+    request = updateRequestHostname(request, domains[environment][backend]);
   }
   if (terminateTls) {
     request.protocol = 'http';
