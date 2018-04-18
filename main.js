@@ -133,15 +133,10 @@ function updateRequestHostname(request, hostname) {
   return request;
 }
 
-function shouldTerminateTls() {
-  return false;
-}
-
 async function handleOpenCollective(request) {
   const url = new URL(request.url);
   const environment = getEnvironment(url);
   const backend = getBackend(url);
-  const terminateTls = shouldTerminateTls();
   const headers = {};
   if (backend) {
     headers['OC-Backend'] = backend;
@@ -151,9 +146,6 @@ async function handleOpenCollective(request) {
   }
   if (domains[environment] && domains[environment][backend]) {
     request = updateRequestHostname(request, domains[environment][backend]);
-  }
-  if (terminateTls) {
-    request.protocol = 'http';
   }
   let response = await fetch(request);
   if (Object.keys(headers).length) {
