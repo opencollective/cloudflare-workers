@@ -7,7 +7,7 @@ const domains = {
   'staging': {
     'website': 'opencollective-staging-website.herokuapp.com',
     'frontend': 'oc-staging-frontend.herokuapp.com',
-    'images': 'oc-staging-image-server.herokuapp.com'
+    'images': 'oc-prod-image-server.herokuapp.com'
   }
 };
 
