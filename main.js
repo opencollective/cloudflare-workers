@@ -120,15 +120,18 @@ function getBackend(url) {
   return 'frontend';
 }
 
-function addResponseHeaders(response, headers) {
-  const originalHeaders = {};
+function addResponseHeaders(response, responseHeaders) {
+  const headers = {};
   for (const pair of response.headers) {
-    originalHeaders[pair[0]] = pair[1];
+    headers[pair[0]] = pair[1];
   }
+  Object.keys(responseHeaders).forEach(key => {
+    headers[key] = responseHeaders[key];
+  });
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
-    headers: Object.assign(headers, originalHeaders)
+    headers: headers
   });
 }
 
@@ -136,7 +139,7 @@ async function handleOpenCollective(request) {
   const url = new URL(request.url);
   const environment = getEnvironment(url);
   const backend = getBackend(url);
-  const headers = {};
+  const responseHeaders = {};
   if (backend) {
     responseHeaders['oc-backend'] = backend;
   }
@@ -150,8 +153,9 @@ async function handleOpenCollective(request) {
   } else {
     response = await fetch(request);
   }
-  if (Object.keys(headers).length) {
-    response = addResponseHeaders(response, headers);
+  if (Object.keys(responseHeaders).length) {
+    response = addResponseHeaders(response, responseHeaders);
   }
-  return response
+  return response;
 }
+
