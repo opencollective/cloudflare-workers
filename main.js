@@ -12,7 +12,20 @@ const domains = {
 };
 
 addEventListener('fetch', event => {
-  event.respondWith(handleOpenCollective(event.request))
+  const url = new URL(event.request.url);
+  // Disable for avatars
+  if (url.pathname.indexOf('/avatar') !== -1 || url.pathname.indexOf('/avatar.') !== -1) {
+    return;
+  }
+  const environment = getEnvironment(url);
+  // 100% of the traffic for production
+  if (environment == 'production') {
+    event.respondWith(handleOpenCollective(event.request))
+  }
+  // 100% of the traffic for staging
+  if (environment == 'staging') {
+    event.respondWith(handleOpenCollective(event.request))
+  }
 })
 
 function getEnvironment(url) {
