@@ -139,10 +139,10 @@ async function handleOpenCollective(request) {
   const backend = getBackend(url);
   const headers = {};
   if (backend) {
-    headers['OC-Backend'] = backend;
+    responseHeaders['oc-backend'] = backend;
   }
   if (environment) {
-    headers['OC-Environment'] = environment;
+    responseHeaders['oc-environment'] = environment;
   }
   if (domains[environment] && domains[environment][backend]) {
     request = updateRequestHostname(request, domains[environment][backend]);
