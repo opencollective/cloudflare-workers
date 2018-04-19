@@ -132,20 +132,6 @@ function addResponseHeaders(response, headers) {
   });
 }
 
-
-function updateRequestHostname(request, hostname) {
-  const urlObject = new URL(request.url);
-  const url = request.url.replace(`/${urlObject.hostname}/`, `/${hostname}/`);
-  request = new Request(url, {
-    method: request.method,
-    headers: request.headers,
-    body: request.body,
-    redirect: request.redirect,
-    referrer: request.referrer
-  });
-  return request;
-}
-
 async function handleOpenCollective(request) {
   const url = new URL(request.url);
   const environment = getEnvironment(url);
@@ -157,10 +143,13 @@ async function handleOpenCollective(request) {
   if (environment) {
     responseHeaders['oc-environment'] = environment;
   }
+  let response;
   if (domains[environment] && domains[environment][backend]) {
-    request = updateRequestHostname(request, domains[environment][backend]);
+    url.hostname = domains[environment][backend];
+    response = await fetch(url, request);
+  } else {
+    response = await fetch(request);
   }
-  let response = await fetch(request);
   if (Object.keys(headers).length) {
     response = addResponseHeaders(response, headers);
   }
