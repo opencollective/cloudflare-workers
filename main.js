@@ -1,13 +1,13 @@
 const domains = {
   'production': {
-    'website': 'opencollective-prod-website.herokuapp.com',
-    'frontend': 'oc-prod-frontend.herokuapp.com',
-    'images': 'oc-prod-image-server.herokuapp.com'
+    'website': 'website.opencollective.com',
+    'frontend': 'frontend.opencollective.com',
+    'images': 'images.opencollective.com'
   },
   'staging': {
-    'website': 'opencollective-staging-website.herokuapp.com',
-    'frontend': 'oc-staging-frontend.herokuapp.com',
-    'images': 'oc-prod-image-server.herokuapp.com'
+    'website': 'website-staging.opencollective.com',
+    'frontend': 'frontend-staging.opencollective.com',
+    'images': 'images.opencollective.com'
   }
 };
 
