@@ -13,10 +13,6 @@ const domains = {
 
 addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  // Disable for avatars
-  if (url.pathname.indexOf('/avatar') !== -1 || url.pathname.indexOf('/avatar.') !== -1) {
-    return;
-  }
   const environment = getEnvironment(url);
   // 100% of the traffic for production
   if (environment == 'production') {
