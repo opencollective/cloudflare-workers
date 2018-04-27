@@ -1,13 +1,21 @@
+const apiKeys = {
+  'production': '30DV4OgF6jXO8WeaWy503AZnO1GF3gHv',
+  'staging': '09u624Pc9F47zoGLlkg1TBSbOl2ydSAq',
+};
+
 const domains = {
   'production': {
     'website': 'website.opencollective.com',
     'frontend': 'frontend.opencollective.com',
-    'images': 'images.opencollective.com'
+    'api': 'api.opencollective.com',
+    'images': 'images.opencollective.com',
+
   },
   'staging': {
     'website': 'website-staging.opencollective.com',
     'frontend': 'frontend-staging.opencollective.com',
-    'images': 'images.opencollective.com'
+    'api': 'api-staging.opencollective.com',
+    'images': 'images.opencollective.com',
   }
 };
 
@@ -37,6 +45,10 @@ function getBackend(url) {
   // index
   if (url.pathname === '/') {
     return 'website';
+  }
+  // api
+  if (url.pathname.indexOf('/api/') === 0) {
+    return 'api';
   }
   // proxy
   if (url.pathname.indexOf('/proxy/') === 0) {
@@ -145,10 +157,12 @@ async function handleOpenCollective(request) {
   let response;
   if (domains[environment] && domains[environment][backend]) {
     url.hostname = domains[environment][backend];
-    response = await fetch(url, request);
-  } else {
-    response = await fetch(request);
   }
+  if (backend === 'api' && url.pathname.indexOf('/api/') === 0) {
+    url.pathname = url.pathname.replace('/api/', '');
+    url.searchParams.set('api_key', apiKeys[environment]);
+  }
+  response = await fetch(url, request);
   if (Object.keys(responseHeaders).length) {
     response = addResponseHeaders(response, responseHeaders);
   }
