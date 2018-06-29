@@ -1,6 +1,11 @@
+const logsUrls = {
+  'default': '_DEFAULT_LOGGING_URL_',
+  'website': '_WEBSITE_LOGGING_URL_',
+};
+
 const apiKeys = {
-  'production': '30DV4OgF6jXO8WeaWy503AZnO1GF3gHv',
-  'staging': '09u624Pc9F47zoGLlkg1TBSbOl2ydSAq',
+  'production': '_PRODUCTION_API_KEY_',
+  'staging': '_STAGING_API_KEY_',
 };
 
 const domains = {
@@ -16,23 +21,16 @@ const domains = {
     'frontend': 'frontend-staging.opencollective.com',
     'api': 'api-staging.opencollective.com',
     'images': 'images.opencollective.com',
-  }
+  },
 };
 
-addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-  const environment = getEnvironment(url);
-  // 100% of the traffic for production
-  if (environment == 'production') {
-    event.respondWith(handleOpenCollective(event.request))
-  }
-  // 100% of the traffic for staging
-  if (environment == 'staging') {
-    event.respondWith(handleOpenCollective(event.request))
-  }
-})
+addEventListener('fetch', (event) => {
+  event.passThroughOnException();
 
-function getEnvironment(url) {
+  event.respondWith(handleOpenCollective(event));
+});
+
+function getEnvironment (url) {
   if (url.hostname === 'staging.opencollective.com') {
     return 'staging';
   }
@@ -41,7 +39,7 @@ function getEnvironment(url) {
   }
 }
 
-function getBackend(url) {
+function getBackend (url) {
   // index
   if (url.pathname === '/') {
     return 'website';
@@ -128,7 +126,7 @@ function getBackend(url) {
   return 'frontend';
 }
 
-function addResponseHeaders(response, responseHeaders) {
+function addResponseHeaders (response, responseHeaders) {
   const headers = {};
   for (const pair of response.headers) {
     headers[pair[0]] = pair[1];
@@ -139,11 +137,13 @@ function addResponseHeaders(response, responseHeaders) {
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
-    headers: headers
+    headers: headers,
   });
 }
 
-async function handleOpenCollective(request) {
+async function handleOpenCollective (event) {
+  const request = event.request;
+  const log = getLog(request);
   const url = new URL(request.url);
   const environment = getEnvironment(url);
   const backend = getBackend(url);
@@ -166,6 +166,45 @@ async function handleOpenCollective(request) {
   if (Object.keys(responseHeaders).length) {
     response = addResponseHeaders(response, responseHeaders);
   }
+  // Logging
+  log.response.status = response.status;
+  const location = response.headers.get('Location');
+  const contentType = response.headers.get('Content-Type');
+  // We skip Redirects and Statics (Images + Fonts)
+  if (!location && contentType && contentType.indexOf('image') === -1 && contentType.indexOf('font') === -1) {
+    event.waitUntil(postLog(logsUrls[backend] || logsUrls['default'], log));
+  }
   return response;
 }
 
+function getLog (request, response) {
+  const headers = {};
+  for (const pair of request.headers) {
+    headers[pair[0]] = pair[1];
+  }
+  const url = new URL(request.url);
+  const log = {
+    request: {
+      time: new Date().toISOString(),
+      address: headers['cf-connecting-ip'],
+      method: request.method,
+      url: url.pathname + url.search,
+      headers: headers,
+    },
+    response: {
+      status: response ? response.status : 200,
+    },
+  };
+  return log;
+}
+
+function postLog (url, log) {
+  return fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(log),
+    headers: {
+      'user-agent': 'Cloudflare Worker',
+      'content-type': 'application/json',
+    },
+  });
+}
