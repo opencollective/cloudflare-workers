@@ -1,36 +1,35 @@
 const logsUrls = {
-  'default': '_DEFAULT_LOGGING_URL_',
-  'website': '_WEBSITE_LOGGING_URL_',
+  default: '_DEFAULT_LOGGING_URL_',
+  website: '_WEBSITE_LOGGING_URL_',
 };
 
 const apiKeys = {
-  'production': '_PRODUCTION_API_KEY_',
-  'staging': '_STAGING_API_KEY_',
+  production: '_PRODUCTION_API_KEY_',
+  staging: '_STAGING_API_KEY_',
 };
 
 const domains = {
-  'production': {
-    'website': 'website.opencollective.com',
-    'frontend': 'frontend.opencollective.com',
-    'api': 'api.opencollective.com',
-    'images': 'images.opencollective.com',
-
+  production: {
+    website: 'website.opencollective.com',
+    frontend: 'frontend.opencollective.com',
+    api: 'api.opencollective.com',
+    images: 'images.opencollective.com',
   },
-  'staging': {
-    'website': 'website-staging.opencollective.com',
-    'frontend': 'frontend-staging.opencollective.com',
-    'api': 'api-staging.opencollective.com',
-    'images': 'images.opencollective.com',
+  staging: {
+    website: 'website-staging.opencollective.com',
+    frontend: 'frontend-staging.opencollective.com',
+    api: 'api-staging.opencollective.com',
+    images: 'images.opencollective.com',
   },
 };
 
-addEventListener('fetch', (event) => {
+addEventListener('fetch', event => {
   event.passThroughOnException();
 
   event.respondWith(handleOpenCollective(event));
 });
 
-function getEnvironment (url) {
+function getEnvironment(url) {
   if (url.hostname === 'staging.opencollective.com') {
     return 'staging';
   }
@@ -39,7 +38,7 @@ function getEnvironment (url) {
   }
 }
 
-function getBackend (url) {
+function getBackend(url) {
   // index
   if (url.pathname === '/') {
     return 'website';
@@ -102,7 +101,11 @@ function getBackend (url) {
   }
   // backers
   // e.g. /mochajs/backers.svg or /gulpjs/tiers/individual.svg
-  if (url.pathname.match(/^\/([^/]*)\/(backers?|sponsors?|tiers\/([^/]*)).(png|svg)$/)) {
+  if (
+    url.pathname.match(
+      /^\/([^/]*)\/(backers?|sponsors?|tiers\/([^/]*)).(png|svg)$/,
+    )
+  ) {
     return 'images';
   }
   // contributors
@@ -115,7 +118,9 @@ function getBackend (url) {
     return 'frontend';
   }
   // button
-  if (url.pathname.match(/^\/(widgets|([^/]*)\/(donate|contribute)\/button.*)/)) {
+  if (
+    url.pathname.match(/^\/(widgets|([^/]*)\/(donate|contribute)\/button.*)/)
+  ) {
     return 'frontend';
   }
   // images
@@ -126,7 +131,7 @@ function getBackend (url) {
   return 'frontend';
 }
 
-function addResponseHeaders (response, responseHeaders) {
+function addResponseHeaders(response, responseHeaders) {
   const headers = {};
   for (const pair of response.headers) {
     headers[pair[0]] = pair[1];
@@ -141,7 +146,7 @@ function addResponseHeaders (response, responseHeaders) {
   });
 }
 
-async function handleOpenCollective (event) {
+async function handleOpenCollective(event) {
   const request = event.request;
   const log = getLog(request);
   const url = new URL(request.url);
@@ -171,13 +176,18 @@ async function handleOpenCollective (event) {
   const location = response.headers.get('Location');
   const contentType = response.headers.get('Content-Type');
   // We skip Redirects and Statics (Images + Fonts)
-  if (!location && contentType && contentType.indexOf('image') === -1 && contentType.indexOf('font') === -1) {
+  if (
+    !location &&
+    contentType &&
+    contentType.indexOf('image') === -1 &&
+    contentType.indexOf('font') === -1
+  ) {
     event.waitUntil(postLog(logsUrls[backend] || logsUrls['default'], log));
   }
   return response;
 }
 
-function getLog (request, response) {
+function getLog(request, response) {
   const headers = {};
   for (const pair of request.headers) {
     headers[pair[0]] = pair[1];
@@ -198,7 +208,7 @@ function getLog (request, response) {
   return log;
 }
 
-function postLog (url, log) {
+function postLog(url, log) {
   return fetch(url, {
     method: 'POST',
     body: JSON.stringify(log),
