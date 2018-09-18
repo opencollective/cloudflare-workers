@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --timeout 30000",
     "lint": "eslint *.js test/*.js",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "prettier": "prettier *.js test/*.js --write "
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,6 @@
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-react": "^7.10.0",
     "mocha": "^5.2.0"
+    "prettier": "^1.14.2"
   }
 }
