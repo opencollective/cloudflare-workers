@@ -41,7 +41,7 @@ function getEnvironment(url) {
 function getBackend(url) {
   // index
   if (url.pathname === '/') {
-    return 'website';
+    return 'frontend';
   }
   // api
   if (url.pathname.indexOf('/api/') === 0) {
@@ -52,8 +52,15 @@ function getBackend(url) {
     return 'images';
   }
   // website-static
-  if (url.pathname.match(/^\/(faq|learn-more|discover|about)$/)) {
+  if (url.pathname.match(/^\/(learn-more|discover)$/)) {
     return 'website';
+  }
+  // website-static
+  if (
+    url.pathname.match(/^\/(faq|about)$/i) ||
+    url.pathname.match(/^\/faq\/.+/i)
+  ) {
+    return 'frontend';
   }
   // invoice
   if (url.pathname.match(/(invoice\.pdf|invoice\.html|banner.md)$/)) {

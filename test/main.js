@@ -8,12 +8,12 @@ const scheme = 'https';
 const domain = 'opencollective.com';
 
 describe('"index" route', function() {
-  it('should return "website" backend', function(done) {
+  it('should return "frontend" backend', function(done) {
     chai
       .request(`${scheme}://${domain}`)
       .get('/')
       .end(function(err, res) {
-        expect(res).to.have.header('oc-backend', 'website');
+        expect(res).to.have.header('oc-backend', 'frontend');
         done();
       });
   });
@@ -33,11 +33,35 @@ describe.skip('"proxy" route', function() {
   });
 });
 
-describe('"website-static" route', function() {
-  it('should return "website" backend', function(done) {
+describe('"faq" route', function() {
+  it('should return "frontend" backend', function(done) {
     chai
       .request(`${scheme}://${domain}`)
       .get('/faq')
+      .end(function(err, res) {
+        expect(res).to.have.header('oc-backend', 'frontend');
+        done();
+      });
+  });
+});
+
+describe('"about" route', function() {
+  it('should return "frontend" backend', function(done) {
+    chai
+      .request(`${scheme}://${domain}`)
+      .get('/about')
+      .end(function(err, res) {
+        expect(res).to.have.header('oc-backend', 'frontend');
+        done();
+      });
+  });
+});
+
+describe('"discover" route', function() {
+  it('should return "website" backend', function(done) {
+    chai
+      .request(`${scheme}://${domain}`)
+      .get('/discover')
       .end(function(err, res) {
         expect(res).to.have.header('oc-backend', 'website');
         done();
