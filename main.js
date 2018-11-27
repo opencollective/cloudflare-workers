@@ -52,10 +52,14 @@ function getBackend(url) {
     return 'images';
   }
   // website-static
-  if (url.pathname.match(/^\/(learn-more|discover)$/)) {
+  if (url.pathname.match(/^\/(learn-more)$/)) {
     return 'website';
   }
-  // website-static
+  // frontend
+  if (url.pathname.match(/^\/(discover)$/)) {
+    return 'frontend';
+  }
+  // frontend
   if (
     url.pathname.match(/^\/(faq|about)$/i) ||
     url.pathname.match(/^\/faq\/.+/i)
@@ -130,9 +134,9 @@ function getBackend(url) {
   ) {
     return 'frontend';
   }
-  // images
+  // frontend
   if (url.pathname.match(/\.(png|jpg)$/)) {
-    return 'images';
+    return 'frontend';
   }
   // default
   return 'frontend';
