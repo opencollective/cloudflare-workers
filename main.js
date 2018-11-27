@@ -134,9 +134,9 @@ function getBackend(url) {
   ) {
     return 'frontend';
   }
-  // images
+  // frontend
   if (url.pathname.match(/\.(png|jpg)$/)) {
-    return 'images';
+    return 'frontend';
   }
   // default
   return 'frontend';
