@@ -58,12 +58,12 @@ describe('"about" route', function() {
 });
 
 describe('"discover" route', function() {
-  it('should return "website" backend', function(done) {
+  it('should return "frontend" backend', function(done) {
     chai
       .request(`${scheme}://${domain}`)
       .get('/discover')
       .end(function(err, res) {
-        expect(res).to.have.header('oc-backend', 'website');
+        expect(res).to.have.header('oc-backend', 'frontend');
         done();
       });
   });
