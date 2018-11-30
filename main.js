@@ -143,12 +143,12 @@ function getBackend(url) {
 }
 
 function addResponseHeaders(response, responseHeaders) {
-  const headers = {};
-  for (const pair of response.headers) {
-    headers[pair[0]] = pair[1];
+  const headers = new Map();
+  for (const [key, value] of response.headers) {
+    headers.set(key, value);
   }
   Object.keys(responseHeaders).forEach(key => {
-    headers[key] = responseHeaders[key];
+    headers.set(key, responseHeaders[key]);
   });
   return new Response(response.body, {
     status: response.status,
