@@ -19,7 +19,7 @@ const domains = {
     website: 'website-staging.opencollective.com',
     frontend: 'frontend-staging.opencollective.com',
     api: 'api-staging.opencollective.com',
-    images: 'images.opencollective.com',
+    images: 'images-staging.opencollective.com',
   },
 };
 
