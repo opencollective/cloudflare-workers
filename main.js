@@ -108,7 +108,7 @@ function getBackend(url) {
   // website
   // e.g. /mochajs/sponsor/0/website
   if (url.pathname.match(/\/website$/)) {
-    return 'frontend';
+    return 'images';
   }
   // backers
   // e.g. /mochajs/backers.svg or /gulpjs/tiers/individual.svg
