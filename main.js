@@ -23,6 +23,8 @@ const domains = {
   },
 };
 
+const availableLanguages = ['en', 'fr', 'ja', 'es'];
+
 addEventListener('fetch', event => {
   event.passThroughOnException();
 
@@ -178,6 +180,19 @@ async function handleOpenCollective(event) {
     url.pathname = url.pathname.replace('/api/', '');
     url.searchParams.set('api_key', apiKeys[environment]);
   }
+  // Localization
+  if (backend === 'frontend') {
+    const acceptLanguage = request.headers.get('Accept-Language');
+    if (acceptLanguage) {
+      const detectedLanguage = pickLanguage(availableLanguages, acceptLanguage);
+      if (detectedLanguage) {
+        responseHeaders['oc-language'] = detectedLanguage;
+        if (detectedLanguage !== 'en' && !url.searchParams.get('language')) {
+          url.searchParams.set('language', detectedLanguage);
+        }
+      }
+    }
+  }
   response = await fetch(url, request);
   if (Object.keys(responseHeaders).length) {
     response = addResponseHeaders(response, responseHeaders);
@@ -228,4 +243,79 @@ function postLog(url, log) {
       'content-type': 'application/json',
     },
   });
+}
+
+function parseLanguage(al) {
+  const strings = (al || '').match(
+    /((([a-zA-Z]+(-[a-zA-Z0-9]+){0,2})|\*)(;q=[0-1](\.[0-9]+)?)?)*/g,
+  );
+  return strings
+    .map(m => {
+      if (!m) {
+        return;
+      }
+
+      const bits = m.split(';');
+      const ietf = bits[0].split('-');
+      const hasScript = ietf.length === 3;
+
+      return {
+        code: ietf[0],
+        script: hasScript ? ietf[1] : null,
+        region: hasScript ? ietf[2] : ietf[1],
+        quality: bits[1] ? parseFloat(bits[1].split('=')[1]) : 1.0,
+      };
+    })
+    .filter(r => {
+      return r;
+    })
+    .sort((a, b) => {
+      return b.quality - a.quality;
+    });
+}
+
+function pickLanguage(supportedLanguages, acceptLanguage, options) {
+  options = options || {};
+
+  if (!supportedLanguages || !supportedLanguages.length || !acceptLanguage) {
+    return null;
+  }
+
+  acceptLanguage = parseLanguage(acceptLanguage);
+
+  const supported = supportedLanguages.map(support => {
+    const bits = support.split('-');
+    const hasScript = bits.length === 3;
+
+    return {
+      code: bits[0],
+      script: hasScript ? bits[1] : null,
+      region: hasScript ? bits[2] : bits[1],
+    };
+  });
+
+  for (let i = 0; i < acceptLanguage.length; i++) {
+    const lang = acceptLanguage[i];
+    const langCode = lang.code.toLowerCase();
+    const langRegion = lang.region ? lang.region.toLowerCase() : lang.region;
+    const langScript = lang.script ? lang.script.toLowerCase() : lang.script;
+    for (let j = 0; j < supported.length; j++) {
+      const supportedCode = supported[j].code.toLowerCase();
+      const supportedScript = supported[j].script
+        ? supported[j].script.toLowerCase()
+        : supported[j].script;
+      const supportedRegion = supported[j].region
+        ? supported[j].region.toLowerCase()
+        : supported[j].region;
+      if (
+        langCode === supportedCode &&
+        (options.loose || !langScript || langScript === supportedScript) &&
+        (options.loose || !langRegion || langRegion === supportedRegion)
+      ) {
+        return supportedLanguages[j];
+      }
+    }
+  }
+
+  return null;
 }
