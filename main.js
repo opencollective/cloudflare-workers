@@ -14,12 +14,14 @@ const domains = {
     frontend: 'frontend.opencollective.com',
     api: 'api.opencollective.com',
     images: 'images.opencollective.com',
+    invoices: 'invoices.opencollective.com',
   },
   staging: {
     website: 'website-staging.opencollective.com',
     frontend: 'frontend-staging.opencollective.com',
     api: 'api-staging.opencollective.com',
     images: 'images-staging.opencollective.com',
+    invoices: 'invoices-staging.opencollective.com',
   },
 };
 
@@ -69,8 +71,8 @@ function getBackend(url) {
     return 'frontend';
   }
   // invoice
-  if (url.pathname.match(/(invoice\.pdf|invoice\.html|banner.md)$/)) {
-    return 'website';
+  if (url.pathname.match(/(invoice\.pdf|invoice\.html)$/)) {
+    return 'invoices';
   }
   // apply
   if (url.pathname.match(/^\/(opensource|github)\/apply/)) {
