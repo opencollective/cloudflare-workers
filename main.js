@@ -42,10 +42,6 @@ function getBackend(url) {
   if (url.pathname.indexOf('/api/') === 0) {
     return 'api';
   }
-  // proxy
-  if (url.pathname.indexOf('/proxy/') === 0) {
-    return 'images';
-  }
   // Invoices
   if (url.pathname.match(/(invoice\.pdf|invoice\.html)$/)) {
     return 'invoices';

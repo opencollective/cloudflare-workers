@@ -19,20 +19,6 @@ describe('"index" route', function() {
   });
 });
 
-describe.skip('"proxy" route', function() {
-  it('should return "images" backend', function(done) {
-    chai
-      .request(`${scheme}://${domain}`)
-      .get(
-        '/proxy/images/?src=https%3A%2F%2Fopencollective-production.s3-us-west-1.amazonaws.com%2F8c6499b0-99ab-11e7-80ca-f5c3a43ab43f.png&height=36',
-      )
-      .end(function(err, res) {
-        expect(res).to.have.header('oc-backend', 'images');
-        done();
-      });
-  });
-});
-
 describe('"faq" route', function() {
   it('should return "frontend" backend', function(done) {
     chai
