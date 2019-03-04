@@ -1,8 +1,3 @@
-const logsUrls = {
-  default: '_DEFAULT_LOGGING_URL_',
-  website: '_WEBSITE_LOGGING_URL_',
-};
-
 const apiKeys = {
   production: '_PRODUCTION_API_KEY_',
   staging: '_STAGING_API_KEY_',
@@ -163,7 +158,6 @@ function addResponseHeaders(response, responseHeaders) {
 
 async function handleOpenCollective(event) {
   const request = event.request;
-  const log = getLog(request);
   const url = new URL(request.url);
   const environment = getEnvironment(url);
   const backend = getBackend(url);
@@ -199,52 +193,7 @@ async function handleOpenCollective(event) {
   if (Object.keys(responseHeaders).length) {
     response = addResponseHeaders(response, responseHeaders);
   }
-  // Logging
-  log.response.status = response.status;
-  const location = response.headers.get('Location');
-  const contentType = response.headers.get('Content-Type');
-  // We skip Redirects and Statics (Images + Fonts)
-  if (
-    !location &&
-    contentType &&
-    contentType.indexOf('image') === -1 &&
-    contentType.indexOf('font') === -1
-  ) {
-    event.waitUntil(postLog(logsUrls[backend] || logsUrls['default'], log));
-  }
   return response;
-}
-
-function getLog(request, response) {
-  const headers = {};
-  for (const pair of request.headers) {
-    headers[pair[0]] = pair[1];
-  }
-  const url = new URL(request.url);
-  const log = {
-    request: {
-      time: new Date().toISOString(),
-      address: headers['cf-connecting-ip'],
-      method: request.method,
-      url: url.pathname + url.search,
-      headers: headers,
-    },
-    response: {
-      status: response ? response.status : 200,
-    },
-  };
-  return log;
-}
-
-function postLog(url, log) {
-  return fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(log),
-    headers: {
-      'user-agent': 'Cloudflare Worker',
-      'content-type': 'application/json',
-    },
-  });
 }
 
 function parseLanguage(al) {
