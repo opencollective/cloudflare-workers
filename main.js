@@ -38,10 +38,6 @@ function getEnvironment(url) {
 }
 
 function getBackend(url) {
-  // index
-  if (url.pathname === '/') {
-    return 'frontend';
-  }
   // api
   if (url.pathname.indexOf('/api/') === 0) {
     return 'api';
@@ -50,35 +46,12 @@ function getBackend(url) {
   if (url.pathname.indexOf('/proxy/') === 0) {
     return 'images';
   }
-  // website-static
-  if (url.pathname.match(/^\/(learn-more)$/)) {
-    return 'website';
-  }
-  // frontend
-  if (url.pathname.match(/^\/(discover)$/)) {
-    return 'frontend';
-  }
-  // frontend
-  if (
-    url.pathname.match(/^\/(faq|about)$/i) ||
-    url.pathname.match(/^\/faq\/.+/i)
-  ) {
-    return 'frontend';
-  }
-  // invoice
+  // Invoices
   if (url.pathname.match(/(invoice\.pdf|invoice\.html)$/)) {
     return 'invoices';
   }
-  // apply
-  if (url.pathname.match(/^\/(opensource|github)\/apply/)) {
-    return 'website';
-  }
-  // members
-  if (url.pathname.match(/\/members\/.+\.json$/)) {
-    return 'frontend';
-  }
-  // json
-  if (url.pathname.match(/\.json$/)) {
+  // REST API (json, csv)
+  if (url.pathname.match(/(\.json|\.csv)$/)) {
     return 'frontend';
   }
   // public
@@ -109,7 +82,7 @@ function getBackend(url) {
   if (url.pathname.match(/\/website$/)) {
     return 'images';
   }
-  // backers
+  // backers/sponsors and tiers (svg and png)
   // e.g. /mochajs/backers.svg or /gulpjs/tiers/individual.svg
   if (
     url.pathname.match(
@@ -122,20 +95,6 @@ function getBackend(url) {
   // mosaic of github contributors
   if (url.pathname.match(/\/contributors\.svg$/)) {
     return 'images';
-  }
-  // frontend-static
-  if (url.pathname.match(/^\/(static|_next|tos|privacypolicy)/)) {
-    return 'frontend';
-  }
-  // button
-  if (
-    url.pathname.match(/^\/(widgets|([^/]*)\/(donate|contribute)\/button.*)/)
-  ) {
-    return 'frontend';
-  }
-  // frontend
-  if (url.pathname.match(/\.(png|jpg)$/)) {
-    return 'frontend';
   }
   // default
   return 'frontend';
