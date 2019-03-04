@@ -70,26 +70,26 @@ describe('"discover" route', function() {
 });
 
 describe('"invoice" route', function() {
-  it('should return "website" backend', function(done) {
+  it('should return "invoices" backend', function(done) {
     chai
       .request(`${scheme}://${domain}`)
       .get(
         '/material-ui/transactions/12845f09-2845-4de1-9a6b-606af73e702f/invoice.pdf',
       )
       .end(function(err, res) {
-        expect(res).to.have.header('oc-backend', 'website');
+        expect(res).to.have.header('oc-backend', 'invoices');
         done();
       });
   });
 });
 
 describe('"apply" route', function() {
-  it('should return "website" backend', function(done) {
+  it('should return "frontend" backend', function(done) {
     chai
       .request(`${scheme}://${domain}`)
       .get('/opensource/apply')
       .end(function(err, res) {
-        expect(res).to.have.header('oc-backend', 'website');
+        expect(res).to.have.header('oc-backend', 'frontend');
         done();
       });
   });
@@ -180,13 +180,13 @@ describe('"avatar" route', function() {
 });
 
 describe('"website" route', function() {
-  it('should return "frontend" backend', function(done) {
+  it('should return "images" backend', function(done) {
     chai
       .request(`${scheme}://${domain}`)
       .get('/mochajs/sponsor/0/website')
       .redirects(0)
       .end(function(err, res) {
-        expect(res).to.have.header('oc-backend', 'frontend');
+        expect(res).to.have.header('oc-backend', 'images');
         done();
       });
   });
