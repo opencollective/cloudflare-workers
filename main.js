@@ -1,6 +1,6 @@
 const apiKeys = {
   production: '_PRODUCTION_API_KEY_',
-  staging: '_STAGING_API_KEY_',
+  staging: '09u624Pc9F47zoGLlkg1TBSbOl2ydSAq',
 };
 
 const domains = {
