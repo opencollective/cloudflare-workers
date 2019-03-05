@@ -9,12 +9,14 @@ const domains = {
     api: 'api.opencollective.com',
     images: 'images.opencollective.com',
     invoices: 'invoices.opencollective.com',
+    rest: 'rest.opencollective.com',
   },
   staging: {
     frontend: 'frontend-staging.opencollective.com',
     api: 'api-staging.opencollective.com',
     images: 'images-staging.opencollective.com',
     invoices: 'invoices-staging.opencollective.com',
+    rest: 'rest-staging.opencollective.com',
   },
 };
 
@@ -46,7 +48,7 @@ function getBackend(url) {
   }
   // REST API (json, csv)
   if (url.pathname.match(/(\.json|\.csv)$/)) {
-    return 'frontend';
+    return 'rest';
   }
   // public
   if (url.pathname.match(/^\/public\//)) {

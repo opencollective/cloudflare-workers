@@ -99,7 +99,7 @@ describe('"json" route', function() {
       .request(`${scheme}://${domain}`)
       .get('/nuxtjs.json')
       .end(function(err, res) {
-        expect(res).to.have.header('oc-backend', 'frontend');
+        expect(res).to.have.header('oc-backend', 'rest');
         done();
       });
   });
