@@ -106,12 +106,12 @@ describe('"json" route', function() {
 });
 
 describe('"public" route', function() {
-  it('should return "website" backend', function(done) {
+  it('should return "frontend" backend', function(done) {
     chai
       .request(`${scheme}://${domain}`)
       .get('/public/images/home-backers.svg')
       .end(function(err, res) {
-        expect(res).to.have.header('oc-backend', 'website');
+        expect(res).to.have.header('oc-backend', 'frontend');
         done();
       });
   });

@@ -52,7 +52,7 @@ function getBackend(url) {
   }
   // public
   if (url.pathname.match(/^\/public\//)) {
-    return 'website';
+    return 'frontend';
   }
   // static-images
   if (url.pathname.match(/^\/static\/images\/.*/)) {
