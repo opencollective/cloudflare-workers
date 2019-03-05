@@ -5,14 +5,12 @@ const apiKeys = {
 
 const domains = {
   production: {
-    website: 'website.opencollective.com',
     frontend: 'frontend.opencollective.com',
     api: 'api.opencollective.com',
     images: 'images.opencollective.com',
     invoices: 'invoices.opencollective.com',
   },
   staging: {
-    website: 'website-staging.opencollective.com',
     frontend: 'frontend-staging.opencollective.com',
     api: 'api-staging.opencollective.com',
     images: 'images-staging.opencollective.com',
