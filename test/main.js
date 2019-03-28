@@ -31,13 +31,27 @@ describe('"faq" route', function() {
   });
 });
 
+describe('"tos" route', function() {
+  it('should return "frontend" backend', function(done) {
+    chai
+      .request(`${scheme}://${domain}`)
+      .get('/tos')
+      .end(function(err, res) {
+        expect(res).to.have.header('oc-backend', 'frontend');
+        done();
+      });
+  });
+});
+
 describe('"about" route', function() {
   it('should return "frontend" backend', function(done) {
     chai
       .request(`${scheme}://${domain}`)
       .get('/about')
       .end(function(err, res) {
-        expect(res).to.have.header('oc-backend', 'frontend');
+        expect(res.redirects).to.include(
+          'https://docs.opencollective.com/help/about',
+        );
         done();
       });
   });
