@@ -131,6 +131,10 @@ async function handleOpenCollective(event) {
     url.pathname = url.pathname.replace('/api/', '');
     url.searchParams.set('api_key', apiKeys[environment]);
   }
+  // Redirects
+  if (backend === 'frontend' && url.pathname === '/about') {
+    return Response.redirect('https://docs.opencollective.com/help/about', 301);
+  }
   // Localization
   if (backend === 'frontend') {
     const acceptLanguage = request.headers.get('Accept-Language');
