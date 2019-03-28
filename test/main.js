@@ -96,12 +96,12 @@ describe('"apply" route', function() {
 });
 
 describe('"members" route', function() {
-  it('should return "frontend" backend', function(done) {
+  it('should return "rest" backend', function(done) {
     chai
       .request(`${scheme}://${domain}`)
       .get('/radarr/members/users.json')
       .end(function(err, res) {
-        expect(res).to.have.header('oc-backend', 'frontend');
+        expect(res).to.have.header('oc-backend', 'rest');
         done();
       });
   });
