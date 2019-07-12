@@ -141,6 +141,9 @@ async function handleOpenCollective(event) {
   if (backend === 'frontend' && url.pathname === '/about') {
     return Response.redirect('https://docs.opencollective.com/help/about', 301);
   }
+  if (backend === 'frontend' && url.pathname === '/opensourcecollective') {
+    return Response.redirect('https://opencollective.com/opensource', 301);
+  }
   // Localization
   if (backend === 'frontend') {
     const language = getLanguage(request);
