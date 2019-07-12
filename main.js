@@ -48,6 +48,10 @@ function getBackend(url) {
   if (url.pathname.match(/(invoice\.pdf|invoice\.html)$/)) {
     return 'invoices';
   }
+  // Manifest
+  if (url.pathname.match(/(manifest\.json)$/)) {
+    return 'frontend';
+  }
   // REST API (json, csv)
   if (url.pathname.match(/(\.json|\.csv)$/)) {
     return 'rest';
