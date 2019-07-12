@@ -20,6 +20,8 @@ const domains = {
   },
 };
 
+const detectableLanguages = ['en', 'fr'];
+
 const availableLanguages = ['en', 'fr', 'ja', 'es'];
 
 addEventListener('fetch', event => {
@@ -137,14 +139,11 @@ async function handleOpenCollective(event) {
   }
   // Localization
   if (backend === 'frontend') {
-    const acceptLanguage = request.headers.get('Accept-Language');
-    if (acceptLanguage) {
-      const detectedLanguage = pickLanguage(availableLanguages, acceptLanguage);
-      if (detectedLanguage) {
-        responseHeaders['oc-language'] = detectedLanguage;
-        if (detectedLanguage !== 'en' && !url.searchParams.get('language')) {
-          url.searchParams.set('language', detectedLanguage);
-        }
+    const language = getLanguage(request);
+    if (language) {
+      responseHeaders['oc-language'] = language;
+      if (language !== 'en' && !url.searchParams.get('language')) {
+        url.searchParams.set('language', language);
       }
     }
   }
@@ -154,6 +153,23 @@ async function handleOpenCollective(event) {
   }
   return response;
 }
+
+function getLanguage(request) {
+  const cookie = request.headers.get('Cookie');
+  if (cookie) {
+    const cookies = parseCookie(cookie);
+    if (cookies.language && availableLanguages.includes(cookies.language)) {
+      return cookies.language;
+    }
+  }
+  const acceptLanguage = request.headers.get('Accept-Language');
+  if (acceptLanguage) {
+    const detectedLanguage = pickLanguage(detectableLanguages, acceptLanguage);
+    return detectedLanguage;
+  }
+}
+
+/* Adapted from https://github.com/opentable/accept-language-parser */
 
 function parseLanguage(al) {
   const strings = (al || '').match(
@@ -183,6 +199,8 @@ function parseLanguage(al) {
       return b.quality - a.quality;
     });
 }
+
+/* Adapted from https://github.com/opentable/accept-language-parser */
 
 function pickLanguage(supportedLanguages, acceptLanguage, options) {
   options = options || {};
@@ -228,4 +246,66 @@ function pickLanguage(supportedLanguages, acceptLanguage, options) {
   }
 
   return null;
+}
+
+/**
+ * Parse a cookie header.
+ *
+ * Adapted from https://github.com/jshttp/cookie
+ *
+ * Parse the given cookie header string into an object
+ * The object has the various cookies as keys(names) => values
+ *
+ * @param {string} str
+ * @return {object}
+ * @public
+ */
+
+function parseCookie(str) {
+  const pairSplitRegExp = /; */;
+
+  const obj = {};
+  const pairs = str.split(pairSplitRegExp);
+
+  for (let i = 0; i < pairs.length; i++) {
+    const pair = pairs[i];
+    let eq_idx = pair.indexOf('=');
+
+    // skip things that don't look like key=value
+    if (eq_idx < 0) {
+      continue;
+    }
+
+    const key = pair.substr(0, eq_idx).trim();
+    let val = pair.substr(++eq_idx, pair.length).trim();
+
+    // quoted values
+    if ('"' == val[0]) {
+      val = val.slice(1, -1);
+    }
+
+    // only assign once
+    if (undefined == obj[key]) {
+      obj[key] = tryDecode(val);
+    }
+  }
+
+  return obj;
+}
+
+/**
+ * Try decoding a string using a decoding function.
+ *
+ * Adapted from https://github.com/jshttp/cookie
+ *
+ * @param {string} str
+ * @private
+ */
+
+function tryDecode(str) {
+  try {
+    return decodeURIComponent(str);
+  } catch (e) {
+    return str;
+  }
 }
