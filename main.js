@@ -84,7 +84,7 @@ function getBackend(url) {
   // e.g. /mochajs/backers.svg or /gulpjs/tiers/individual.svg
   if (
     url.pathname.match(
-      /^\/([^/]*)\/(backers?|sponsors?|tiers\/([^/]*)).(png|svg)$/,
+      /^\/([^/]*)\/(backers?|sponsors?|organizations?|individuals?|tiers\/([^/]*)).(png|svg)$/,
     )
   ) {
     return 'images';
