@@ -31,15 +31,25 @@ addEventListener('fetch', event => {
 });
 
 function getEnvironment(url) {
-  if (url.hostname === 'staging.opencollective.com') {
+  if (
+    url.hostname === 'staging.opencollective.com' ||
+    url.hostname === 'api-staging.opencollective.com'
+  ) {
     return 'staging';
   }
-  if (url.hostname === 'opencollective.com') {
+  if (
+    url.hostname === 'opencollective.com' ||
+    url.hostname === 'api.opencollective.com'
+  ) {
     return 'production';
   }
 }
 
 function getBackend(url) {
+  // api v1
+  if (url.pathname.match(/^\/api\/v1\/.*/) || url.pathname.match(/^\/v1\/.*/)) {
+    return 'rest';
+  }
   // api
   if (url.pathname.indexOf('/api/') === 0) {
     return 'api';
