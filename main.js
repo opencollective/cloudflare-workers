@@ -20,9 +20,11 @@ const domains = {
   },
 };
 
-const detectableLanguages = ['en', 'fr'];
+// All languages with at least 50% completion on https://crowdin.com/project/opencollective
+const detectableLanguages = ['en', 'fr', 'pt'];
 
-const availableLanguages = ['en', 'fr', 'ja', 'es'];
+// All languages with at least 20% completion on https://crowdin.com/project/opencollective
+const availableLanguages = ['en', 'fr', 'ja', 'es', 'it', 'pt', 'nl', 'ru'];
 
 addEventListener('fetch', event => {
   event.passThroughOnException();
