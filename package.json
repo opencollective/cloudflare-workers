@@ -31,5 +31,9 @@
   },
   "engines": {
     "node": "10.x.x"
+  },
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/engineering"
   }
 }
