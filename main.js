@@ -21,10 +21,24 @@ const domains = {
 };
 
 // All languages with at least 50% completion on https://crowdin.com/project/opencollective
-const detectableLanguages = ['en', 'fr', 'pt'];
+const detectableLanguages = ['en', 'fr', 'pt', 'es'];
 
 // All languages with at least 20% completion on https://crowdin.com/project/opencollective
-const availableLanguages = ['en', 'fr', 'ja', 'es', 'it', 'pt', 'nl', 'ru'];
+const availableLanguages = [
+  'en',
+  'ca',
+  'zh',
+  'cs',
+  'nl',
+  'fr',
+  'de',
+  'it',
+  'ja',
+  'ko',
+  'pt',
+  'ru',
+  'es',
+];
 
 addEventListener('fetch', event => {
   event.passThroughOnException();
