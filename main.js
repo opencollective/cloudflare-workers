@@ -40,7 +40,7 @@ const availableLanguages = [
   'es',
 ];
 
-addEventListener('fetch', event => {
+addEventListener('fetch', (event) => {
   event.passThroughOnException();
 
   event.respondWith(handleOpenCollective(event));
@@ -133,7 +133,7 @@ function addResponseHeaders(response, responseHeaders) {
   for (const pair of response.headers) {
     headers[pair[0]] = pair[1];
   }
-  Object.keys(responseHeaders).forEach(key => {
+  Object.keys(responseHeaders).forEach((key) => {
     headers[key] = responseHeaders[key];
   });
   return new Response(response.body, {
@@ -209,7 +209,7 @@ function parseLanguage(al) {
     /((([a-zA-Z]+(-[a-zA-Z0-9]+){0,2})|\*)(;q=[0-1](\.[0-9]+)?)?)*/g,
   );
   return strings
-    .map(m => {
+    .map((m) => {
       if (!m) {
         return;
       }
@@ -225,7 +225,7 @@ function parseLanguage(al) {
         quality: bits[1] ? parseFloat(bits[1].split('=')[1]) : 1.0,
       };
     })
-    .filter(r => {
+    .filter((r) => {
       return r;
     })
     .sort((a, b) => {
@@ -244,7 +244,7 @@ function pickLanguage(supportedLanguages, acceptLanguage, options) {
 
   acceptLanguage = parseLanguage(acceptLanguage);
 
-  const supported = supportedLanguages.map(support => {
+  const supported = supportedLanguages.map((support) => {
     const bits = support.split('-');
     const hasScript = bits.length === 3;
 
