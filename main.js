@@ -170,6 +170,9 @@ async function handleOpenCollective(event) {
   if (backend === 'frontend' && url.pathname === '/opensourcecollective') {
     return Response.redirect('https://opencollective.com/opensource', 301);
   }
+  if (backend === 'frontend' && url.pathname === '/bayareatechclub') {
+    return Response.redirect('https://opencollective.com/baytech', 301);
+  }
   // Localization
   if (backend === 'frontend') {
     const language = getLanguage(request);
