@@ -173,6 +173,9 @@ async function handleOpenCollective(event) {
   if (backend === 'frontend' && url.pathname === '/bayareatechclub') {
     return Response.redirect('https://opencollective.com/baytech', 301);
   }
+  if (backend === 'frontend' && url.pathname === '/the-social-change-agency') {
+    return Response.redirect('https://opencollective.com/the-social-change-nest', 301);
+  }
   // Localization
   if (backend === 'frontend') {
     const language = getLanguage(request);
