@@ -8,14 +8,12 @@ const domains = {
     frontend: 'frontend.opencollective.com',
     api: 'api.opencollective.com',
     images: 'images.opencollective.com',
-    invoices: 'invoices.opencollective.com',
     rest: 'rest.opencollective.com',
   },
   staging: {
     frontend: 'frontend-staging.opencollective.com',
     api: 'api-staging.opencollective.com',
     images: 'images-staging.opencollective.com',
-    invoices: 'invoices-staging.opencollective.com',
     rest: 'rest-staging.opencollective.com',
   },
 };
@@ -69,10 +67,6 @@ function getBackend(url) {
   // api
   if (url.pathname.indexOf('/api/') === 0) {
     return 'api';
-  }
-  // Invoices
-  if (url.pathname.match(/(invoice\.pdf|invoice\.html)$/)) {
-    return 'invoices';
   }
   // Manifest
   if (url.pathname.match(/(manifest\.json)$/)) {
@@ -174,7 +168,10 @@ async function handleOpenCollective(event) {
     return Response.redirect('https://opencollective.com/baytech', 301);
   }
   if (backend === 'frontend' && url.pathname === '/the-social-change-agency') {
-    return Response.redirect('https://opencollective.com/the-social-change-nest', 301);
+    return Response.redirect(
+      'https://opencollective.com/the-social-change-nest',
+      301,
+    );
   }
   // Localization
   if (backend === 'frontend') {
