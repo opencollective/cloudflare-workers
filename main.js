@@ -138,7 +138,8 @@ function addResponseHeaders(response, responseHeaders) {
 }
 
 async function handleOpenCollective(event) {
-  const request = event.request;
+  // Make the headers mutable by re-constructing the Request.
+  const request = new Request(event.request);
   const url = new URL(request.url);
   const environment = getEnvironment(url);
   const backend = getBackend(url);
@@ -151,6 +152,7 @@ async function handleOpenCollective(event) {
   }
   let response;
   if (domains[environment] && domains[environment][backend]) {
+    request.headers.set('original-hostname', url.hostname);
     url.hostname = domains[environment][backend];
   }
   if (backend === 'api' && url.pathname.indexOf('/api/') === 0) {
