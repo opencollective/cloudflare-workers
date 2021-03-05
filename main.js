@@ -19,7 +19,7 @@ const domains = {
 };
 
 // All languages with at least 50% completion on https://crowdin.com/project/opencollective
-const detectableLanguages = ['en', 'fr', 'pt', 'es'];
+const detectableLanguages = ['en', 'fr', 'pt', 'pt-BR', 'es'];
 
 // All languages with at least 20% completion on https://crowdin.com/project/opencollective
 const availableLanguages = [
@@ -34,6 +34,7 @@ const availableLanguages = [
   'ja',
   'ko',
   'pt',
+  'pt-BR',
   'ru',
   'es',
 ];
