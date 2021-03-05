@@ -139,7 +139,7 @@ function addResponseHeaders(response, responseHeaders) {
 }
 
 async function handleOpenCollective(event) {
-  const request = event.request;
+  const request = new Request(event.request);
   const url = new URL(request.url);
   const environment = getEnvironment(url);
   const backend = getBackend(url);
@@ -152,6 +152,7 @@ async function handleOpenCollective(event) {
   }
   let response;
   if (domains[environment] && domains[environment][backend]) {
+    request.headers.set('original-hostname', url.hostname);
     url.hostname = domains[environment][backend];
   }
   if (backend === 'api' && url.pathname.indexOf('/api/') === 0) {
@@ -159,6 +160,15 @@ async function handleOpenCollective(event) {
     url.searchParams.set('api_key', apiKeys[environment]);
   }
   // Redirects
+  if (
+    backend === 'frontend' &&
+    url.pathname === '/open-web-docs/conversations/-'
+  ) {
+    return Response.redirect(
+      'https://opencollective.com/open-web-docs/updates/community-q-and-a-session-join-us',
+      302,
+    );
+  }
   if (backend === 'frontend' && url.pathname === '/about') {
     return Response.redirect('https://docs.opencollective.com/help/about', 301);
   }
